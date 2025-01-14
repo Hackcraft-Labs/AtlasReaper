@@ -16,11 +16,12 @@ namespace AtlasReaper.Jira
                 RootIssuesObject issuesList = new RootIssuesObject();
 
                 // Building the url
-                string query = WebUtility.UrlEncode(options.Query);
+                //string query = WebUtility.UrlEncode(options.Query);
+                string encodedQuery = "\"" + WebUtility.UrlEncode(options.Query) + "\"";
                 string url = 
-                    options.Url + 
-                    "/rest/api/3/search?jql=text~" + 
-                    query + 
+                    options.Url +
+                    "/rest/api/3/search?jql=text~" +
+                    encodedQuery + 
                     "&expand=renderedFields&fields=description,summary,created,updated,status,creator,assignee";
 
                 if (options.Comments)
@@ -40,18 +41,18 @@ namespace AtlasReaper.Jira
                     // return all results
                 }
 
-                PrintIssues(issuesList.Issues, Console.Out);
+                //PrintIssues(issuesList.Issues, Console.Out, options.Url);
 
                 if (options.outfile != null)
                 {
                     using (StreamWriter writer = new StreamWriter(options.outfile))
                     {
-                        PrintIssues(issuesList.Issues, writer);
+                        PrintIssues(issuesList.Issues, writer, options.Url);
                     }
                 }
                 else
                 {
-                    PrintIssues(issuesList.Issues, Console.Out);
+                    PrintIssues(issuesList.Issues, Console.Out, options.Url);
                 }
 
             }
@@ -74,7 +75,7 @@ namespace AtlasReaper.Jira
 
         }
 
-        internal void PrintIssues(List<Issue> issues, TextWriter writer)
+        internal void PrintIssues(List<Issue> issues, TextWriter writer, string url)
         {
             try
             {
@@ -93,18 +94,21 @@ namespace AtlasReaper.Jira
                     writer.WriteLine("  Creator        : " + issue.Fields.Creator?.EmailAddress + " - " + issue.Fields.Creator?.DisplayName + " - " + issue.Fields.Creator?.TimeZone);
                     writer.WriteLine("  Assignee       : " + issue.Fields.Assignee?.EmailAddress + " - " + issue.Fields.Assignee?.DisplayName + " - " + issue.Fields.Assignee?.TimeZone);
                     writer.WriteLine("  Issue Contents : " + Regex.Replace(issue.RenderedFields.Description, @"<(?!\/?a(?=>|\s.*>))\/?.*?>", "").Trim('\r', '\n'));
+                    writer.WriteLine("  Issue URL : " + url + "/rest/api/3/issue/" + issue.Id);
                     writer.WriteLine();
                     if (attachments?.Count > 0)
                     {
-                        writer.WriteLine("  Attachments    : ");
+                        writer.WriteLine("  Attachments         : ");
                         writer.WriteLine();
                         for (int j = 0; j < attachments.Count; j++)
                         {
                             Attachment attachment = attachments[j];
-                            writer.WriteLine("    Filename      : " + attachment.FileName);
-                            writer.WriteLine("    Attachment Id : " + attachment.Id);
-                            writer.WriteLine("    Mimetype      : " + attachment.mimeType);
-                            writer.WriteLine("    File size     : " + attachment.Size);
+                            writer.WriteLine("    Filename           : " + attachment.FileName);
+                            writer.WriteLine("    Attachment Id      : " + attachment.Id);
+                            writer.WriteLine("    Mimetype           : " + attachment.mimeType);
+                            writer.WriteLine("    File size          : " + attachment.Size);
+                            writer.WriteLine("    Attachment URL     : " + url + "/rest/api/3/attachment/" + attachment.Id);
+                            writer.WriteLine("    Attachment content : " + url + "/rest/api/3/attachment/content/" + attachment.Id);
                             writer.WriteLine();
                         }
                     }

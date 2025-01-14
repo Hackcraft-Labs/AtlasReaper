@@ -16,7 +16,7 @@ namespace AtlasReaper.Confluence
                 if (!options.All)
                 {
                     SearchObject searchObject = DoSearchAsync(options, options.Query);
-                    PrintResults(searchObject.Results);
+                    PrintResults(searchObject.Results, options.Url);
                 }
                 else
                 {
@@ -33,7 +33,7 @@ namespace AtlasReaper.Confluence
                         results.AddRange(searchObject.Results);
                     }
 
-                    PrintResults(results);
+                    PrintResults(results, options.Url);
                 }
             }
 
@@ -50,9 +50,9 @@ namespace AtlasReaper.Confluence
             try
             {
                 // Encode query for Url
-                query = WebUtility.UrlEncode(query);
-                string url = options.Url + "/wiki/rest/api/search?cql=text~%22" + query + "~%22&limit=" + options.Limit;
-                Console.WriteLine(url);
+                //query = WebUtility.UrlEncode(query);
+                string encodedQuery = "\"" + WebUtility.UrlEncode(query) + "\"";
+                string url = options.Url + "/wiki/rest/api/search?cql=text~" + encodedQuery + "&limit=" + options.Limit;
                 if (paginationUrl != null)
                 {
                     url = paginationUrl;
@@ -72,7 +72,7 @@ namespace AtlasReaper.Confluence
 
         }
 
-        internal void PrintResults(List<SearchResult> results)
+        internal void PrintResults(List<SearchResult> results, string url)
         {
             try
             {
@@ -81,10 +81,19 @@ namespace AtlasReaper.Confluence
                 {
                     SearchResult result = results[i];
 
-                    Console.WriteLine("    Title  : " + result.Title.Replace("@@@hl@@@", "").Replace("@@@endhl@@@", ""));
-                    Console.WriteLine("    Id     : " + result.Content.Id);
-                    Console.WriteLine("    Type   : " + result.Content.Type);
-                    Console.WriteLine("    Excerpt: " + result.Excerpt.Replace("@@@hl@@@", "").Replace("@@@endhl@@@", ""));
+                    Console.WriteLine("    Title   : " + result.Title.Replace("@@@hl@@@", "").Replace("@@@endhl@@@", ""));
+                    Console.WriteLine("    Id      : " + result.Content.Id);
+                    Console.WriteLine("    Type    : " + result.Content.Type);
+                    Console.WriteLine("    Excerpt : " + result.Excerpt.Replace("@@@hl@@@", "").Replace("@@@endhl@@@", "").Replace("\\", "\\\\").Replace("\n", "\\n"));
+                    Console.WriteLine("    URL     : " + url + "/wiki/rest/api/content/" + result.Content.Id + "?expand=body.storage");
+                    if (result.Content.Type.Equals("page"))
+                    {
+                        Console.WriteLine("    Attachments URL : " + url + "/wiki/api/v2/pages/" + result.Content.Id + "/attachments");
+                    }
+                    if (result.Content.Type.Equals("blogpost"))
+                    {
+                        Console.WriteLine("    Attachments URL : " + url + "/wiki/api/v2/blogposts/" + result.Content.Id + "/attachments");
+                    }
                     Console.WriteLine();
                 }
             }

@@ -53,8 +53,8 @@ namespace AtlasReaper
                 ConfluenceOptions.ListAttachmentsOptions,
                 ConfluenceOptions.ListPagesOptions,
                 ConfluenceOptions.ListSpacesOptions,
-                ConfluenceOptions.SearchOptions
-                
+                ConfluenceOptions.SearchOptions,
+                ConfluenceOptions.DownloadBOFNETOptions                
             >(args.Skip(1))
             .WithParsed<ConfluenceOptions.AttachOptions>(opts =>
             {
@@ -179,6 +179,22 @@ namespace AtlasReaper
                     return;
                 }
             })
+            .WithParsed<ConfluenceOptions.DownloadBOFNETOptions>(opts =>
+            {
+                try
+                {
+
+                    Auth.CheckAuth(opts.Url, opts.Cookie);
+                    Confluence.DownloadBOFNET download = new Confluence.DownloadBOFNET();
+                    download.DownloadAttachmentsThroughBOFNET(opts);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                    return;
+                }
+
+            })
             .WithNotParsed(HandleParseErrors);
         }
 
@@ -195,7 +211,8 @@ namespace AtlasReaper
                 JiraOptions.ListIssuesOptions,
                 JiraOptions.ListProjectsOptions,
                 JiraOptions.ListUsersOptions,
-                JiraOptions.SearchIssuesOptions
+                JiraOptions.SearchIssuesOptions,
+                JiraOptions.DownloadBOFNETOptions
             >(args.Skip(1))
             .WithParsed<JiraOptions.AddCommentOptions>(opts =>
             {
@@ -328,6 +345,21 @@ namespace AtlasReaper
                     Console.WriteLine("Error: " + ex.Message);
                     return;
                 }
+            })
+            .WithParsed<JiraOptions.DownloadBOFNETOptions>(opts =>
+            {
+                try
+                {
+                    Auth.CheckAuth(opts.Url, opts.Cookie);
+                    Jira.DownloadBOFNET download = new Jira.DownloadBOFNET();
+                    download.DownloadAttachmentsThroughBOFNET(opts);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                    return;
+                }
+
             })
             // Handle errors during argument parsing
             .WithNotParsed(HandleParseErrors);

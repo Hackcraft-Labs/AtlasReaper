@@ -53,6 +53,7 @@ Each command has sub commands for interacting with the specific product.
 - `confluence listpages` - List pages in Confluence.
 - `confluence listspaces` - List spaces in Confluence.
 - `confluence search` - Search Confluence.
+- `confluence downloadBOFNET` - Download attachment(s) through BOF.NET.
 
 #### Jira
 
@@ -65,6 +66,7 @@ Each command has sub commands for interacting with the specific product.
 - `jira listprojects` - List projects in Jira.
 - `jira listusers` - List Atlassian users.
 - `jira searchissues` - Search issues in Jira.
+- `jira downloadBOFNET` - Download attachment(s) through BOF.NET.
 
 
 #### Common Commands
@@ -87,6 +89,18 @@ Here are a few examples of how to use AtlasReaper:
 - Create a new issue in Jira:
     
     `.\AtlasReaper.exe jira createissue --project "PROJ" --issue-type Task --message "I can't access this link from my host"  --url $url --cookie $cookie`
+
+- Search for multiple keywords in Jira Issues and show comments and attachments related to them:
+
+    `.\AtlasReaper.exe jira search --query "password token" --url $url --cookie $cookie --comments --attachments`
+
+- Download attachments from Jira Issues through BOF.NET:
+
+    `.\AtlasReaper.exe jira downloadBOFNET --url $url --cookie $cookie -a id1,id2,...`
+
+- Download attachments from Confluence through BOF.NET:
+
+    `.\AtlasReaper.exe confluence downloadBOFNET --url $url --cookie $cookie -a id1,id2,...`
 
 ## Authentication
 

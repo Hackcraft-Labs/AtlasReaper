@@ -126,6 +126,14 @@ namespace AtlasReaper.Options
             public string OutputDir { get; set; }
         }
 
+        // Download command options
+        [Verb("downloadBOFNET", HelpText = "Download attachment(s) through BOF.NET")]
+        internal class DownloadBOFNETOptions : ConfluenceOptions
+        {
+            [Option('a', "attachments", Required = true, HelpText = "Comma-separated attachment ids to download through BOF.NET (no spaces)")]
+            public string Attachments { get; set; }
+        }
+
         // Embed command options
         [Verb("link", HelpText = "Add link to page")]
         internal class LinkOptions : ConfluenceOptions

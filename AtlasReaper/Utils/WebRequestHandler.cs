@@ -202,5 +202,35 @@ namespace AtlasReaper.Utils
             }
             
         }
+
+        public MemoryStream GetFileInMemory(string url, string cookie)
+        {
+            try
+            {
+                Uri baseAddress = new Uri(url);
+                CookieContainer cookieContainer = new CookieContainer();
+                using (HttpClientHandler handler = new HttpClientHandler() { CookieContainer = cookieContainer })
+                using (HttpClient client = new HttpClient(handler) { BaseAddress = baseAddress })
+                {
+                    ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+                    cookieContainer.Add(baseAddress, new Cookie("cloud.session.token", cookie));
+                    HttpResponseMessage httpResponse = client.GetAsync(url).Result;
+                    string redirectUrl = httpResponse.RequestMessage.RequestUri.ToString();
+
+                    using (Stream contentStream = httpResponse.Content.ReadAsStreamAsync().Result)
+                    {
+                        MemoryStream memoryStream = new MemoryStream();
+                        contentStream.CopyToAsync(memoryStream).Wait();
+                        memoryStream.Position = 0;
+                        return memoryStream;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error occurred in Utils.WebRequestHandler.GetFileInMemory method: " + ex.Message);
+            }
+            return null;
+        }
     }
 }

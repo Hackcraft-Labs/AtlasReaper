@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>AtlasReaper</RootNamespace>
     <AssemblyName>AtlasReaper</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -74,6 +74,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BOFNET, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BOFNET.1.2.0\lib\net48\BOFNET.dll</HintPath>
+    </Reference>
     <Reference Include="CommandLine, Version=2.9.1.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
       <HintPath>..\packages\CommandLineParser.2.9.1\lib\net45\CommandLine.dll</HintPath>
     </Reference>
@@ -93,6 +96,7 @@
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -101,9 +105,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgHandler.cs" />
+    <Compile Include="BOFNET.cs" />
     <Compile Include="Confluence\Auth.cs" />
     <Compile Include="Confluence\Attachments.cs" />
     <Compile Include="Confluence\Attach.cs" />
+    <Compile Include="Confluence\DownloadBOFNET.cs" />
     <Compile Include="Confluence\Link.cs" />
     <Compile Include="Confluence\Embed.cs" />
     <Compile Include="Confluence\Download.cs" />
@@ -115,6 +121,7 @@
     <Compile Include="Jira\Attachments.cs" />
     <Compile Include="Jira\CreateIssue.cs" />
     <Compile Include="Jira\Download.cs" />
+    <Compile Include="Jira\DownloadBOFNET.cs" />
     <Compile Include="Jira\Search.cs" />
     <Compile Include="Jira\Issues.cs" />
     <Compile Include="Jira\Projects.cs" />
